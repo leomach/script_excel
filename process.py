@@ -6,7 +6,7 @@ def listar_arquivos(diretorio, extensao=".xlsx"):
     """Lista arquivos com a extensão especificada dentro do diretório."""
     return [f for f in os.listdir(diretorio) if f.endswith(extensao)]
 
-def processar_arquivos(diretorio, arquivos, tipo, escola):
+def processar_arquivos(diretorio, arquivos, tipo, escola, base_dir):
     """Processa os arquivos e exibe barra de progresso."""
     if arquivos:
         print(f"  📂 {tipo}:")
@@ -14,7 +14,7 @@ def processar_arquivos(diretorio, arquivos, tipo, escola):
             print(f"    📄 {arquivo}")
             # Chama a função para processamento dos arquivos
             if tipo == "Estudantes":
-                students_archives(escola, arquivo)
+                students_archives(escola, arquivo, base_dir)
             elif tipo == "Professores":
                 # Aqui você pode adicionar a função específica para processar professores
                 pass
@@ -34,12 +34,12 @@ def processar_escola(escola, base_dir):
         # Listar e processar arquivos de estudantes
         if os.path.exists(pasta_estudantes):
             arquivos_estudantes = listar_arquivos(pasta_estudantes)
-            processar_arquivos(pasta_estudantes, arquivos_estudantes, "Estudantes", escola)
+            processar_arquivos(pasta_estudantes, arquivos_estudantes, "Estudantes", escola, base_dir)
 
         # Listar e processar arquivos de professores
         if os.path.exists(pasta_professores):
             arquivos_professores = listar_arquivos(pasta_professores)
-            processar_arquivos(pasta_professores, arquivos_professores, "Professores", escola)
+            processar_arquivos(pasta_professores, arquivos_professores, "Professores", escola, base_dir)
 
 def processar_escolas(escolas, base_dir):
     """Processa todas as escolas com barra de progresso."""

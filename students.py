@@ -170,9 +170,9 @@ def responsibles(df_estudantes, escola):
 
 
 
-def students_archives(escola, arquivo):
+def students_archives(escola, arquivo, base_dir):
     global caminho_saida
-    global base_dir
+    
     # Caminho para um dos arquivos de estudantes (ajuste conforme necessário)
     caminho_arquivo = f"{base_dir}/{escola}/Estudantes/{arquivo}"
 
