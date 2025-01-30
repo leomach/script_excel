@@ -2,11 +2,12 @@
 
 Bem-vindo ao **script_excel**, um programa para organizar bases de dados no formato Excel de forma simples e eficiente! 🚀  
 
----
+
 
 ## 🛠️ Pré-requisitos
 
 Antes de executar o script, certifique-se de ter instalado:
+
 
 ### 1️⃣ Python  
 O script requer Python instalado no sistema. Baixe e instale pelo site oficial:  
@@ -32,6 +33,8 @@ Ou instale via terminal:
   ```sh
   pip install pandas tqdm
 
+
+
 ## 📂 Estrutura de Pastas
 
 - Para que o script funcione corretamente, a estrutura de diretórios deve ser a seguinte:
@@ -45,6 +48,8 @@ Ou instale via terminal:
   │   │   └── 📄 arquivo.xlsx  (somente um arquivo)
 
 ⚠️ Atenção: O nome da pasta raiz pode ser alterado no arquivo main.py, mas a estrutura interna deve ser mantida.
+
+
 
 ## ▶️ Como Executar
 
