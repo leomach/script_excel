@@ -28,13 +28,13 @@ Ou instale via terminal:
 
 ### 2️⃣ Bibliotecas Python
 
-Instale as dependências do projeto com:
+- Instale as dependências do projeto com:
   ```sh
   pip install pandas tqdm
 
 ## 📂 Estrutura de Pastas
 
-Para que o script funcione corretamente, a estrutura de diretórios deve ser a seguinte:
+- Para que o script funcione corretamente, a estrutura de diretórios deve ser a seguinte:
 
   ```scss
   📁 pasta_raiz/  (nome personalizável no `main.py`)
@@ -48,7 +48,7 @@ Para que o script funcione corretamente, a estrutura de diretórios deve ser a s
 
 ## ▶️ Como Executar
 
-Navegue até a pasta do projeto e execute o seguinte comando no terminal:
+- Navegue até a pasta do projeto e execute o seguinte comando no terminal:
 
   ```sh
   python main.py
