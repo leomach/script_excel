@@ -2,6 +2,7 @@ import os
 from tqdm import tqdm # type: ignore
 from students import students_archives
 from teams import team_archives
+from schools import school_archives
 
 def listar_arquivos(diretorio, extensao=".xlsx"):
     """Lista arquivos com a extensão especificada dentro do diretório."""
@@ -47,3 +48,4 @@ def processar_escolas(escolas, base_dir):
         processar_escola(escola, base_dir)
         os.system("cls" if os.name == "nt" else "clear") # Limpar tela de acordo com o OS
 
+    school_archives(base_dir)

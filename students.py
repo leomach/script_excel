@@ -37,9 +37,9 @@ def professions(df_pais, escola):
 
     df_profession.dropna(subset=['description'], inplace=True)
 
-    # Agrupar os ids de estudantes de responsáveis duplicados separando-os por vírgula
+    # Agrupar os ids de responsaveis de profissões duplicados separando-os por vírgula
     df_profession = df_profession.groupby(['description'], as_index=False).agg({
-        'id_pais': lambda x: ', '.join(x.astype(str).dropna())  # Concatena as IDs de estudantes
+        'id_pais': lambda x: ', '.join(x.astype(str).dropna())  # Concatena as IDs de responsaveis
     })
 
     df_profession['profession'] = range(1, len(df_profession) + 1)
@@ -172,7 +172,7 @@ def responsibles(df_estudantes, escola):
 
 def students_archives(escola, arquivo, base_dir):
     global caminho_saida
-    
+
     # Caminho para um dos arquivos de estudantes (ajuste conforme necessário)
     caminho_arquivo = f"{base_dir}/{escola}/Estudantes/{arquivo}"
 
