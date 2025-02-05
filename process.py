@@ -1,6 +1,7 @@
 import os
 from tqdm import tqdm # type: ignore
 from students import students_archives
+from teams import team_archives
 
 def listar_arquivos(diretorio, extensao=".xlsx"):
     """Lista arquivos com a extensão especificada dentro do diretório."""
@@ -16,8 +17,7 @@ def processar_arquivos(diretorio, arquivos, tipo, escola, base_dir):
             if tipo == "Estudantes":
                 students_archives(escola, arquivo, base_dir)
             elif tipo == "Professores":
-                # Aqui você pode adicionar a função específica para processar professores
-                pass
+                team_archives(escola, arquivo, base_dir)
 
 def processar_escola(escola, base_dir):
     """Processa uma escola, verificando suas subpastas e arquivos."""
@@ -45,4 +45,5 @@ def processar_escolas(escolas, base_dir):
     """Processa todas as escolas com barra de progresso."""
     for escola in tqdm(escolas, desc="Processando escolas", unit="escola"):
         processar_escola(escola, base_dir)
+        os.system("cls" if os.name == "nt" else "clear") # Limpar tela de acordo com o OS
 
