@@ -3,6 +3,7 @@ from tqdm import tqdm # type: ignore
 from students import students_archives
 from teams import team_archives
 from schools import school_archives
+from utils.functions import clean_screen
 
 def listar_arquivos(diretorio, extensao=".xlsx"):
     """Lista arquivos com a extensão especificada dentro do diretório."""
@@ -49,3 +50,69 @@ def processar_escolas(escolas, base_dir):
         os.system("cls" if os.name == "nt" else "clear") # Limpar tela de acordo com o OS
 
     school_archives(base_dir)
+
+
+
+
+"""
+FUNÇÕES DE TRATAMENTO DA SAÍDA
+"""
+def processar_arquivos_saida(arquivos, categoria, base_dir):
+    """Processa os arquivos da saida e exibe barra de progresso."""
+    
+    if arquivos:
+        for arquivo in tqdm(arquivos, desc=f" Processando {categoria.lower()}", unit="arquivo"):
+            # Chama a função para processamento dos arquivos
+            if categoria == "alunos":
+                pass
+            elif categoria == "responsaveis":
+                pass
+            elif categoria == "profissoes":
+                print(categoria)
+            elif categoria == "equipes":
+                pass
+            elif categoria == "professores":
+                pass
+            elif categoria == "turmas":
+                pass
+            elif categoria == "escolas":
+                pass
+
+def processar_saidas (base_saida):
+    arquivos_saida = listar_arquivos(base_saida, extensao=".csv")
+    # Criando dicionário para armazenar os arquivos separados
+    categorias = {
+        "alunos": [],
+        "profissoes": [],
+        "responsaveis": [],
+        "equipes": [],
+        "professores": [],
+        "turmas": [],
+        "escolas": []
+    }
+
+    # Percorrer a lista e separar os arquivos
+    for arquivo in tqdm(arquivos_saida, desc="Carregando as saidas", unit="arquivo"):
+        if arquivo.startswith("alunos-"):
+            categorias["alunos"].append(arquivo)
+        elif arquivo.startswith("profissoes-"):
+            categorias["profissoes"].append(arquivo)
+        elif arquivo.startswith("responsaveis-"):
+            categorias["responsaveis"].append(arquivo)
+        elif arquivo.startswith("equipe-"):
+            categorias["equipes"].append(arquivo)
+        elif arquivo.startswith("professores-"):
+            categorias["professores"].append(arquivo)
+        elif arquivo.startswith("turmas"):
+            categorias["turmas"].append(arquivo)
+        elif arquivo.startswith("escolas"):
+            categorias["escolas"].append(arquivo)
+
+    # Exibir os resultados
+    for categoria, lista in categorias.items():
+        print(f"\n📂 {categoria.capitalize()} ({len(lista)} arquivos):")
+        print(lista)
+
+    # Processar arquivos na ordem correta de categorias
+    processar_arquivos_saida(categorias["profissoes"], "profissoes", base_saida)
+    print("")
