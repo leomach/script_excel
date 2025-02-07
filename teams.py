@@ -1,5 +1,8 @@
 import os
 import pandas as pd # type: ignore
+from openpyxl import load_workbook # type: ignore
+
+from exit_process.core import DATAFRAMES_TEAMS
 
 # Definir o caminho onde os arquivos serão salvos
 global caminho_saida
@@ -12,7 +15,7 @@ def team_archives(escola, arquivo, base_dir):
     # Caminho para um dos arquivos de estudantes (ajuste conforme necessário)
     caminho_arquivo = f"{base_dir}/{escola}/Professores/{arquivo}"
 
-    df_team = pd.read_excel(caminho_arquivo, engine="openpyxl", skiprows=6)
+    df_team = pd.read_excel(caminho_arquivo, engine="openpyxl")
     df_teams = df_team[["CPF", "Nome", "Função", "Telefone", "Email", "Observação"]].copy()
 
     # Dividindo por função
@@ -44,5 +47,46 @@ def team_archives(escola, arquivo, base_dir):
     df_teachers.to_csv(f"{caminho_saida}professores-{escola}.csv", index=False, encoding="utf-8-sig", sep=";")
     df_teams.to_csv(f"{caminho_saida}equipe-{escola}.csv", index=False, encoding="utf-8-sig", sep=";")
 
-def team_archives_unify(escola, arquivo, base_dir):
-    print(escola, arquivo, base_dir)
+def team_archives_unify(escola, arquivo, base_dir, output_file="./entrada/TODOS OS DADOS/Professores/toda_equipe.xlsx"):
+    global DATAFRAMES_TEAMS
+
+    # Caminho para um dos arquivos de equipe (ajuste conforme necessário)
+    caminho_arquivo = f"{base_dir}/{escola}/Professores/{arquivo}"
+
+    # Ler o arquivo Excel, pulando as primeiras 6 linhas
+    df_team = pd.read_excel(caminho_arquivo, engine="openpyxl", skiprows=6)
+    df_teams = df_team[["CPF", "Nome", "Função", "Telefone", "Email", "Observação"]].copy()
+
+    # Atualiza o DATAFRAMES_TEAMS para ter todos os estudantes
+    if DATAFRAMES_TEAMS is None or DATAFRAMES_TEAMS.empty:
+        DATAFRAMES_TEAMS = df_teams.copy()
+
+        # Criar o arquivo do zero caso ainda não exista
+        df_teams.to_excel(output_file, sheet_name="Equipe", index=False, engine="openpyxl")
+
+        print("Dataframe inicial criado")
+    else:
+        DATAFRAMES_TEAMS = pd.concat(
+                [DATAFRAMES_TEAMS, df_teams], 
+                ignore_index=True, 
+                join="outer"  # Inclui todas as colunas existentes
+            )
+        
+        if os.path.exists(output_file):
+            # Carregar o arquivo Excel existente
+            book = load_workbook(output_file)
+
+            # Verifica se a aba "Estudantes" existe
+            if "Equipe" not in book.sheetnames:
+                print("Aba 'Equipe' não encontrada. Criando nova aba.")
+                df_teams.to_excel(output_file, sheet_name="Equipe", index=False, engine="openpyxl")
+                return
+
+            with pd.ExcelWriter(output_file, engine="openpyxl", mode="a", if_sheet_exists="overlay") as writer:
+                sheet = book["Equipe"]
+                startrow = sheet.max_row if sheet.max_row else 1  # Pega a última linha da aba
+                df_teams.to_excel(writer, sheet_name="Equipe", index=False, startrow=startrow, header=False)
+
+    total_linhas = len(DATAFRAMES_TEAMS)
+    print(f"🧑‍🎓 Total de alunos atualizado: {total_linhas}")
+    print(f"✅ Dados adicionados a {output_file}")

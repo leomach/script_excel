@@ -21,12 +21,12 @@ def processar_arquivos(diretorio, arquivos, tipo, escola, base_dir, unify=False)
                 students_archives(escola, arquivo, base_dir)
             elif tipo == "Professores" and unify == False:
                 pass
-                # team_archives(escola, arquivo, base_dir)
+                team_archives(escola, arquivo, base_dir)
             elif tipo == "Estudantes" and unify == True:
                 students_archives_unify(escola, arquivo, base_dir)
             elif tipo == "Professores" and unify == True:
                 pass
-                # team_archives_unify(escola, arquivo, base_dir)
+                team_archives_unify(escola, arquivo, base_dir)
 
 def processar_escola(escola, base_dir, unify=False):
     """Processa uma escola, verificando suas subpastas e arquivos."""
