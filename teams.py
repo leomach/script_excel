@@ -43,3 +43,6 @@ def team_archives(escola, arquivo, base_dir):
     # Salvando os DataFrames como arquivos CSV
     df_teachers.to_csv(f"{caminho_saida}professores-{escola}.csv", index=False, encoding="utf-8-sig", sep=";")
     df_teams.to_csv(f"{caminho_saida}equipe-{escola}.csv", index=False, encoding="utf-8-sig", sep=";")
+
+def team_archives_unify(escola, arquivo, base_dir):
+    print(escola, arquivo, base_dir)

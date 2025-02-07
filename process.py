@@ -1,27 +1,33 @@
 import os
 from tqdm import tqdm # type: ignore
-from students import students_archives
-from teams import team_archives
+from students import students_archives, students_archives_unify
+from teams import team_archives, team_archives_unify
 from schools import school_archives
-from exit_process.profission import dataframe_profissions
+from utils.functions import entry_dir
+from students import DATAFRAMES_STUDENTS
 
 def listar_arquivos(diretorio, extensao=".xlsx"):
     """Lista arquivos com a extensão especificada dentro do diretório."""
     return [f for f in os.listdir(diretorio) if f.endswith(extensao)]
 
-def processar_arquivos(diretorio, arquivos, tipo, escola, base_dir):
+def processar_arquivos(diretorio, arquivos, tipo, escola, base_dir, unify=False):
     """Processa os arquivos e exibe barra de progresso."""
     if arquivos:
         print(f"  📂 {tipo}:")
         for arquivo in tqdm(arquivos, desc=f" Processando {tipo.lower()}", unit="arquivo"):
             print(f"    📄 {arquivo}")
             # Chama a função para processamento dos arquivos
-            if tipo == "Estudantes":
+            if tipo == "Estudantes" and unify == False:
                 students_archives(escola, arquivo, base_dir)
-            elif tipo == "Professores":
+            elif tipo == "Professores" and unify == False:
                 team_archives(escola, arquivo, base_dir)
+            elif tipo == "Estudantes" and unify == True:
+                students_archives_unify(escola, arquivo, base_dir)
+            elif tipo == "Professores" and unify == True:
+                pass
+                # team_archives_unify(escola, arquivo, base_dir)
 
-def processar_escola(escola, base_dir):
+def processar_escola(escola, base_dir, unify=False):
     """Processa uma escola, verificando suas subpastas e arquivos."""
     escola_path = os.path.join(base_dir, escola)
 
@@ -36,83 +42,29 @@ def processar_escola(escola, base_dir):
         # Listar e processar arquivos de estudantes
         if os.path.exists(pasta_estudantes):
             arquivos_estudantes = listar_arquivos(pasta_estudantes)
-            processar_arquivos(pasta_estudantes, arquivos_estudantes, "Estudantes", escola, base_dir)
+            processar_arquivos(pasta_estudantes, arquivos_estudantes, "Estudantes", escola, base_dir, unify=unify)
 
         # Listar e processar arquivos de professores
         if os.path.exists(pasta_professores):
             arquivos_professores = listar_arquivos(pasta_professores)
-            processar_arquivos(pasta_professores, arquivos_professores, "Professores", escola, base_dir)
-
-def processar_escolas(escolas, base_dir):
-    """Processa todas as escolas com barra de progresso."""
-    for escola in tqdm(escolas, desc="Processando escolas", unit="escola"):
-        processar_escola(escola, base_dir)
-        os.system("cls" if os.name == "nt" else "clear") # Limpar tela de acordo com o OS
-
-    school_archives(base_dir)
+            processar_arquivos(pasta_professores, arquivos_professores, "Professores", escola, base_dir, unify=unify)
 
 
+def processar_escolas(escolas, base_dir, entrada_dir):
 
+    """Cria a pasta de entrada."""
+    base_entrada = entry_dir(entrada_dir)
+    listar_arquivos = os.listdir(base_entrada)
 
-"""
-FUNÇÕES DE TRATAMENTO DA SAÍDA
-"""
-def processar_arquivos_saida(arquivos, categoria, base_dir):
-    """Processa os arquivos da saida e exibe barra de progresso."""
-    
-    if arquivos:
-        for arquivo in tqdm(arquivos, desc=f" Processando {categoria.lower()}", unit="arquivo"):
-            # Chama a função para processamento dos arquivos
-            if categoria == "alunos":
-                pass
-            elif categoria == "responsaveis":
-                pass
-            elif categoria == "profissoes":
-                dataframe_profissions(arquivo)
-            elif categoria == "equipes":
-                pass
-            elif categoria == "professores":
-                pass
-            elif categoria == "turmas":
-                pass
-            elif categoria == "escolas":
-                pass
+    """Une todas as escolas com barra de progresso."""
+    for escola in tqdm(escolas, desc="Unindo escolas", unit="escola"):
+        processar_escola(escola, base_dir, unify=True)
+        print("")
 
-def processar_saidas (base_saida):
-    arquivos_saida = listar_arquivos(base_saida, extensao=".csv")
-    # Criando dicionário para armazenar os arquivos separados
-    categorias = {
-        "alunos": [],
-        "profissoes": [],
-        "responsaveis": [],
-        "equipes": [],
-        "professores": [],
-        "turmas": [],
-        "escolas": []
-    }
+    print("\n================================================================")
+    """Processa arquivo unificado"""
+    for arquivo in listar_arquivos:
+        print("######### Processando arquivo unificado... #########")
+        # processar_escola(escola, base_dir)
 
-    # Percorrer a lista e separar os arquivos
-    for arquivo in tqdm(arquivos_saida, desc="Carregando as saidas", unit="arquivo"):
-        if arquivo.startswith("alunos-"):
-            categorias["alunos"].append(arquivo)
-        elif arquivo.startswith("profissoes-"):
-            categorias["profissoes"].append(arquivo)
-        elif arquivo.startswith("responsaveis-"):
-            categorias["responsaveis"].append(arquivo)
-        elif arquivo.startswith("equipe-"):
-            categorias["equipes"].append(arquivo)
-        elif arquivo.startswith("professores-"):
-            categorias["professores"].append(arquivo)
-        elif arquivo.startswith("turmas"):
-            categorias["turmas"].append(arquivo)
-        elif arquivo.startswith("escolas"):
-            categorias["escolas"].append(arquivo)
-
-    # Exibir os resultados
-    for categoria, lista in categorias.items():
-        print(f"\n📂 {categoria.capitalize()} ({len(lista)} arquivos):")
-        print(lista)
-
-    # Processar arquivos na ordem correta de categorias
-    processar_arquivos_saida(categorias["profissoes"], "profissoes", base_saida)
-    print("")
+    # school_archives(base_dir)

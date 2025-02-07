@@ -1,7 +1,12 @@
 import os
 import json
 import pandas as pd # type: ignore
+from openpyxl import load_workbook # type: ignore
 from cities import remove_duplicate_keys, cities
+from exit_process.core import (
+    DATAFRAMES_STUDENTS,
+    DATAFRAMES_TEAMS,
+)
 
 
 # Remove chaves duplicadas
@@ -230,4 +235,46 @@ def students_archives(escola, arquivo, base_dir):
     # print("###################### Estudantes #####################")
     # print(df_estudantes_com_responsaveis_rename.head(30))
 
+def students_archives_unify(escola, arquivo, base_dir, output_file="./entrada/TODOS OS DADOS/Estudantes/todos_os_alunos.xlsx"):
+    global DATAFRAMES_STUDENTS
 
+    # Caminho para um dos arquivos de estudantes (ajuste conforme necessário)
+    caminho_arquivo = f"{base_dir}/{escola}/Estudantes/{arquivo}"
+
+    # Ler o arquivo Excel, pulando as primeiras 6 linhas
+    df_student = pd.read_excel(caminho_arquivo, engine="openpyxl", skiprows=6)
+    df_estudantes = df_student[['*NomeEstudante', '*Dt Nasc.', '*Sexo', "*Filiação1", "ProfFiliação1", "Filiação2",	"ProfFiliação2", "Email", "*Raça/Cor", "*Nacionalidade", "*Município Nasc.", "*PCD", "*CPF", "RG","Dígito RG","Orgão Exp.","UF", "*Endereço","*Número", "*Bairro",	"*CEP",	"*Município",]].copy()
+
+    # Atualiza o DATAFRAMES_STUDENTS para ter todos os estudantes
+    if DATAFRAMES_STUDENTS is None or DATAFRAMES_STUDENTS.empty:
+        DATAFRAMES_STUDENTS = df_estudantes.copy()
+
+        # Criar o arquivo do zero caso ainda não exista
+        df_estudantes.to_excel(output_file, sheet_name="Estudantes", index=False, engine="openpyxl")
+
+        print("Dataframe inicial criado")
+    else:
+        DATAFRAMES_STUDENTS = pd.concat(
+                [DATAFRAMES_STUDENTS, df_estudantes], 
+                ignore_index=True, 
+                join="outer"  # Inclui todas as colunas existentes
+            )
+        
+        if os.path.exists(output_file):
+            # Carregar o arquivo Excel existente
+            book = load_workbook(output_file)
+
+            # Verifica se a aba "Estudantes" existe
+            if "Estudantes" not in book.sheetnames:
+                print("Aba 'Estudantes' não encontrada. Criando nova aba.")
+                df_estudantes.to_excel(output_file, sheet_name="Estudantes", index=False, engine="openpyxl")
+                return
+
+            with pd.ExcelWriter(output_file, engine="openpyxl", mode="a", if_sheet_exists="overlay") as writer:
+                sheet = book["Estudantes"]
+                startrow = sheet.max_row if sheet.max_row else 1  # Pega a última linha da aba
+                df_estudantes.to_excel(writer, sheet_name="Estudantes", index=False, startrow=startrow, header=False)
+
+    total_linhas = len(DATAFRAMES_STUDENTS)
+    print(f"🧑‍🎓 Total de alunos atualizado: {total_linhas}")
+    print(f"✅ Dados adicionados a {output_file}")
