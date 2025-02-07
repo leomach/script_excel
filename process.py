@@ -20,7 +20,8 @@ def processar_arquivos(diretorio, arquivos, tipo, escola, base_dir, unify=False)
             if tipo == "Estudantes" and unify == False:
                 students_archives(escola, arquivo, base_dir)
             elif tipo == "Professores" and unify == False:
-                team_archives(escola, arquivo, base_dir)
+                pass
+                # team_archives(escola, arquivo, base_dir)
             elif tipo == "Estudantes" and unify == True:
                 students_archives_unify(escola, arquivo, base_dir)
             elif tipo == "Professores" and unify == True:
@@ -65,6 +66,6 @@ def processar_escolas(escolas, base_dir, entrada_dir):
     """Processa arquivo unificado"""
     for arquivo in listar_arquivos:
         print("######### Processando arquivo unificado... #########")
-        # processar_escola(escola, base_dir)
+        processar_escola(arquivo, base_entrada)
 
     # school_archives(base_dir)

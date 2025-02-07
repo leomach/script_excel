@@ -182,7 +182,7 @@ def students_archives(escola, arquivo, base_dir):
     caminho_arquivo = f"{base_dir}/{escola}/Estudantes/{arquivo}"
 
     # Ler o arquivo Excel, pulando as primeiras 6 linhas
-    df_student = pd.read_excel(caminho_arquivo, engine="openpyxl", skiprows=6)
+    df_student = pd.read_excel(caminho_arquivo, engine="openpyxl")
     df_estudantes = df_student[['*NomeEstudante', '*Dt Nasc.', '*Sexo', "*Filiação1", "ProfFiliação1", "Filiação2",	"ProfFiliação2", "Email", "*Raça/Cor", "*Nacionalidade", "*Município Nasc.", "*PCD", "*CPF", "RG","Dígito RG","Orgão Exp.","UF", "*Endereço","*Número", "*Bairro",	"*CEP",	"*Município",]].copy()
 
     # Criar uma coluna de ID único para cada estudante
