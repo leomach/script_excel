@@ -3,7 +3,7 @@ from tqdm import tqdm # type: ignore
 from students import students_archives
 from teams import team_archives
 from schools import school_archives
-from utils.functions import clean_screen
+from exit_process.profission import dataframe_profissions
 
 def listar_arquivos(diretorio, extensao=".xlsx"):
     """Lista arquivos com a extensão especificada dentro do diretório."""
@@ -68,7 +68,7 @@ def processar_arquivos_saida(arquivos, categoria, base_dir):
             elif categoria == "responsaveis":
                 pass
             elif categoria == "profissoes":
-                print(categoria)
+                dataframe_profissions(arquivo)
             elif categoria == "equipes":
                 pass
             elif categoria == "professores":
